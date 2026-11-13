@@ -83,10 +83,13 @@
             <div class="flex justify-between text-sm mb-2">
                 <span>Prepaid {{ prepaid_percent }}%</span><span>COD {{ cod_percent }}%</span>
             </div>
-            <div class="h-3 rounded-full overflow-hidden flex" style="background:#E8D5C4">
-                <div style="width:{{ prepaid_percent }}%;background:#7B4F3A"></div>
-                <div style="width:{{ cod_percent }}%;background:#C9A84C"></div>
-            </div>
+            {# An SVG bar: the widths are plain attributes, so no template tags sit inside CSS. #}
+            <svg class="block w-full h-3 rounded-full overflow-hidden" role="img"
+                 aria-label="Prepaid {{ prepaid_percent }} percent, COD {{ cod_percent }} percent">
+                <rect width="100%" height="100%" fill="#E8D5C4"></rect>
+                <rect width="{{ prepaid_percent }}%" height="100%" fill="#7B4F3A"></rect>
+                <rect x="{{ prepaid_percent }}%" width="{{ cod_percent }}%" height="100%" fill="#C9A84C"></rect>
+            </svg>
             <p class="text-xs opacity-70 mt-3">Prepaid orders have fewer returns to origin. Verify COD orders before shipping.</p>
         {% endcomponent %}
     </div>
