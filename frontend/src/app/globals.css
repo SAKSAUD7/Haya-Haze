@@ -111,6 +111,11 @@
   input, select, textarea {
     font: inherit;
   }
+  /* Grid columns may shrink below their content's width; without this, one wide child
+     (a thumbnail strip, a long button) widens the page on small phones. */
+  .grid > * {
+    min-width: 0;
+  }
 }
 
 @layer components {

@@ -71,3 +71,7 @@ services:
         value: https://hayahaze-store.onrender.com
       - key: NEXT_TELEMETRY_DISABLED
         value: "1"
+      # The free plan has 512 MB; resizing photos on the fly can exhaust it. The demo
+      # images are already WebP, so serve them as they are.
+      - key: NEXT_IMAGE_UNOPTIMIZED
+        value: "1"

@@ -49,8 +49,10 @@ export function uniq<T>(values: T[]): T[] {
 
 export function formatDate(value: string | null | undefined, withTime = false): string {
   if (!value) return "";
+  // A fixed time zone: the server (UTC on most hosts) and the browser must print the same
+  // date, or React reports a hydration mismatch.
   return new Date(value).toLocaleString("en-IN", {
-    day: "numeric", month: "short", year: "numeric",
+    timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric",
     ...(withTime ? { hour: "numeric", minute: "2-digit" } : {}),
   });
 }

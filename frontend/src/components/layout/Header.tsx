@@ -39,7 +39,7 @@ export function AnnouncementBar({ site }: { site: SiteConfig }) {
       <AnimatePresence mode="wait" initial={false}>
         <motion.p
           key={index}
-          className="absolute inset-0 flex items-center justify-center px-4 text-center text-[0.7rem] uppercase tracking-[0.2em]"
+          className="absolute inset-0 flex items-center justify-center truncate whitespace-nowrap px-4 text-center text-[0.62rem] uppercase tracking-[0.1em] sm:text-[0.7rem] sm:tracking-[0.2em]"
           initial={{ y: 14, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -14, opacity: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
@@ -51,7 +51,7 @@ export function AnnouncementBar({ site }: { site: SiteConfig }) {
 }
 
 function IconButton({ label, onClick, href, children, id }: { label: string; onClick?: () => void; href?: string; children: React.ReactNode; id?: string }) {
-  const className = "relative grid h-11 w-11 place-items-center rounded-full text-deep transition-colors duration-300 hover:bg-cream";
+  const className = "relative grid h-11 w-10 shrink-0 place-items-center rounded-full text-deep transition-colors duration-300 hover:bg-cream sm:w-11";
   if (href) return <Link href={href} aria-label={label} className={className} id={id}>{children}</Link>;
   return <button type="button" aria-label={label} onClick={onClick} className={className} id={id}>{children}</button>;
 }
@@ -101,13 +101,13 @@ export function Header({ site, collections }: { site: SiteConfig; collections: C
         )}
         onMouseLeave={() => setMega(false)}
       >
-        <div className="container-page flex h-[68px] items-center justify-between gap-4 md:h-20">
-          <div className="flex flex-1 items-center gap-1 lg:hidden">
+        <div className="container-page flex h-[68px] items-center justify-between gap-1 !px-3 sm:gap-4 sm:!px-5 md:h-20 md:!px-10">
+          <div className="flex flex-1 items-center lg:hidden">
             <IconButton label="Open menu" onClick={() => setMenu(true)}><Menu size={22} strokeWidth={1.4} /></IconButton>
             <IconButton label="Search" onClick={() => setSearch(true)}><Search size={20} strokeWidth={1.4} /></IconButton>
           </div>
 
-          <Link href="/" aria-label="Haya & Haze home" className="shrink-0">
+          <Link href="/" aria-label="Haya & Haze home" className="min-w-0 shrink-0">
             <Logo variant="inline" />
           </Link>
 

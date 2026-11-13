@@ -81,7 +81,7 @@ function Gallery({ product, color }: { product: ProductDetail; color: string }) 
         )}
       </div>
 
-      <div className="relative flex-1">
+      <div className="relative min-w-0 flex-1">
         <div
           className="relative aspect-[3/4] overflow-hidden rounded-[22px] bg-ivory-cream md:cursor-zoom-in"
           onPointerMove={live ? undefined : onMove} onPointerLeave={() => setZoom(null)}
@@ -320,11 +320,11 @@ export function ProductView({ product }: { product: ProductDetail }) {
   return (
     <>
       <div className="grid gap-8 md:grid-cols-[1.08fr_1fr] md:gap-12 lg:gap-16">
-        <div ref={galleryRef} className="md:sticky md:top-28 md:self-start">
+        <div ref={galleryRef} className="min-w-0 md:sticky md:top-28 md:self-start">
           <Gallery product={product} color={color} />
         </div>
 
-        <div>
+        <div className="min-w-0">
           <p className="eyebrow mb-3">{product.collection?.name}</p>
           <h1 className="text-4xl md:text-[3.2rem]">{product.name}</h1>
           {product.subtitle && <p className="mt-2 text-lg text-mocha">{product.subtitle}</p>}
@@ -355,7 +355,7 @@ export function ProductView({ product }: { product: ProductDetail }) {
               <>
                 <div className="flex gap-3">
                   <QuantityStepper value={quantity} onChange={setQuantity} max={Math.max(1, variant?.available ?? 1)} />
-                  <Button full size="lg" onClick={add} loading={pending} magnetic>Add to bag · {formatINR(Number(price) * quantity)}</Button>
+                  <Button full size="lg" onClick={add} loading={pending} magnetic>Add to bag<span className="hidden sm:inline">&nbsp;· {formatINR(Number(price) * quantity)}</span></Button>
                 </div>
                 <Button full size="lg" variant="camel" onClick={buyNow} disabled={pending}>Buy it now</Button>
               </>

@@ -65,9 +65,9 @@ export function Logo({
   if (variant === "wordmark") return <Wordmark tone={tone} className={cn("text-3xl", className)} />;
   if (variant === "inline") {
     return (
-      <span className={cn("inline-flex items-center gap-2", className)} role="img" aria-label="Haya & Haze">
-        <Monogram tone={tone} className="h-11 w-auto md:h-[52px]" title="" />
-        <Wordmark tone={tone} className="text-[1.6rem] md:text-[1.9rem]" />
+      <span className={cn("inline-flex items-center gap-1.5 sm:gap-2", className)} role="img" aria-label="Haya & Haze">
+        <Monogram tone={tone} className="h-10 w-auto sm:h-11 md:h-[52px]" title="" />
+        <Wordmark tone={tone} className="text-[1.35rem] sm:text-[1.6rem] md:text-[1.9rem]" />
       </span>
     );
   }

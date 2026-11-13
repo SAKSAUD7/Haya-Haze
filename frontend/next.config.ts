@@ -10,6 +10,9 @@ const config: NextConfig = {
   // Django URLs end in a slash; do not let Next.js strip it before proxying.
   skipTrailingSlashRedirect: true,
   images: {
+    // Small hosts (Render free plan, 512 MB) can run out of memory resizing many photos at
+    // once. Set NEXT_IMAGE_UNOPTIMIZED=1 there to serve the (already WebP) originals as-is.
+    unoptimized: process.env.NEXT_IMAGE_UNOPTIMIZED === "1",
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
