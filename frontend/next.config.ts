@@ -29,6 +29,8 @@ const config: NextConfig = {
   // which keeps auth/cart cookies first-party and lets WebGL load textures without CORS.
   async rewrites() {
     return [
+      // Browsers request /favicon.ico on their own; answer with the brand icon.
+      { source: "/favicon.ico", destination: "/brand/icon-512.png" },
       { source: "/api/:path*/", destination: `${backend}/api/:path*/` },
       { source: "/api/:path*", destination: `${backend}/api/:path*` },
       { source: "/media/:path*", destination: `${backend}/media/:path*` },
