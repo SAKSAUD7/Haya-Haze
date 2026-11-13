@@ -1,0 +1,94 @@
+{% extends 'admin/base.html' %}
+{% load i18n unfold %}
+
+{% block title %}Dashboard | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+    {% include "unfold/helpers/site_branding.html" %}
+{% endblock %}
+
+{% block content %}
+{% component "unfold/components/container.html" %}
+    <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+        {% for kpi in kpis %}
+            {% component "unfold/components/card.html" %}
+                {% component "unfold/components/text.html" %}{{ kpi.label }}{% endcomponent %}
+                <div class="hh-kpi text-font-important-light dark:text-font-important-dark mt-1">{{ kpi.value }}</div>
+                <div class="text-xs mt-1 opacity-70">{{ kpi.hint }}</div>
+            {% endcomponent %}
+        {% endfor %}
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {% for alert in alerts %}
+            <a href="{{ alert.url }}" class="block">
+                {% component "unfold/components/card.html" %}
+                    <div class="flex items-center justify-between gap-3">
+                        <span>{{ alert.label }}</span>
+                        <span class="hh-kpi {% if alert.count %}text-primary-600{% else %}opacity-40{% endif %}" style="font-size:1.6rem">{{ alert.count }}</span>
+                    </div>
+                {% endcomponent %}
+            </a>
+        {% endfor %}
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+        <div class="lg:col-span-2">
+            {% component "unfold/components/card.html" with title="Sales, last 30 days" %}
+                {% component "unfold/components/chart/line.html" with data=sales_chart height=300 %}{% endcomponent %}
+            {% endcomponent %}
+        </div>
+        <div>
+            {% component "unfold/components/card.html" with title="Sales by collection" %}
+                {% component "unfold/components/chart/bar.html" with data=collection_chart height=300 %}{% endcomponent %}
+            {% endcomponent %}
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {% component "unfold/components/card.html" with title="Top products, last 30 days" %}
+            {% if top_products %}
+                <table class="w-full text-sm">
+                    {% for p in top_products %}
+                        <tr class="border-b border-base-200 dark:border-base-800 last:border-0">
+                            <td class="py-2 pr-2">{{ p.name }}</td>
+                            <td class="py-2 px-2 text-right opacity-70 whitespace-nowrap">{{ p.units }} sold</td>
+                            <td class="py-2 pl-2 text-right font-semibold whitespace-nowrap">{{ p.revenue }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p class="text-sm opacity-70">No sales yet. They will appear here as orders come in.</p>
+            {% endif %}
+        {% endcomponent %}
+
+        {% component "unfold/components/card.html" with title="Low stock" %}
+            {% if low_stock %}
+                <table class="w-full text-sm">
+                    {% for v in low_stock %}
+                        <tr class="border-b border-base-200 dark:border-base-800 last:border-0">
+                            <td class="py-2 pr-2"><a href="{{ v.url }}" class="text-primary-600">{{ v.name }}</a></td>
+                            <td class="py-2 pl-2 text-right whitespace-nowrap {% if v.available <= 0 %}text-red-600 font-semibold{% endif %}">
+                                {% if v.available <= 0 %}Sold out{% else %}{{ v.available }} left{% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p class="text-sm opacity-70">Everything is comfortably in stock.</p>
+            {% endif %}
+        {% endcomponent %}
+
+        {% component "unfold/components/card.html" with title="COD vs prepaid, last 30 days" %}
+            <div class="flex justify-between text-sm mb-2">
+                <span>Prepaid {{ prepaid_percent }}%</span><span>COD {{ cod_percent }}%</span>
+            </div>
+            <div class="h-3 rounded-full overflow-hidden flex" style="background:#E8D5C4">
+                <div style="width:{{ prepaid_percent }}%;background:#7B4F3A"></div>
+                <div style="width:{{ cod_percent }}%;background:#C9A84C"></div>
+            </div>
+            <p class="text-xs opacity-70 mt-3">Prepaid orders have fewer returns to origin. Verify COD orders before shipping.</p>
+        {% endcomponent %}
+    </div>
+{% endcomponent %}
+{% endblock %}

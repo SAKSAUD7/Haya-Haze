@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{% if packing_slip %}Packing slip{% else %}Tax invoice{% endif %} {{ order.number }}</title>
+<style>
+  @page { size: A4; margin: 16mm; }
+  body { font-family: Lato, Arial, sans-serif; color: #3D2B1F; font-size: 12px; line-height: 1.5; margin: 0; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 24px; }
+  h1 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 500; font-size: 30px; margin: 0; letter-spacing: .03em; }
+  h1 span { color: #C9A84C; }
+  .muted { color: #7B4F3A; }
+  .head { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #C8A882; padding-bottom: 16px; }
+  .doc { text-align: right; }
+  .doc strong { font-size: 15px; letter-spacing: .14em; text-transform: uppercase; }
+  .cols { display: flex; gap: 32px; margin: 20px 0; }
+  .cols > div { flex: 1; }
+  .label { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: #7B4F3A; margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; background: #F5EDE4; padding: 8px; }
+  td { padding: 8px; border-bottom: 1px solid #E8D5C4; vertical-align: top; }
+  .r { text-align: right; }
+  .totals { width: 300px; margin-left: auto; margin-top: 14px; }
+  .totals td { border: 0; padding: 4px 8px; }
+  .totals .grand td { border-top: 2px solid #C8A882; font-size: 15px; font-weight: bold; padding-top: 8px; }
+  .note { margin-top: 28px; padding: 14px 16px; background: #FAF6F2; border-radius: 10px; }
+  .foot { margin-top: 28px; text-align: center; font-family: Georgia, serif; font-size: 14px; color: #7B4F3A; }
+  @media print { .wrap { padding: 0; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div>
+      <h1>Haya <span>&amp;</span> Haze</h1>
+      <div class="muted">{{ site.address|linebreaksbr }}</div>
+      {% if site.gstin %}<div>GSTIN: {{ site.gstin }}</div>{% endif %}
+    </div>
+    <div class="doc">
+      <strong>{% if packing_slip %}Packing slip{% else %}Tax invoice{% endif %}</strong><br>
+      Order {{ order.number }}<br>
+      {{ order.placed_at|default:order.created_at|date:"d M Y" }}<br>
+      {{ order.get_payment_method_display }}
+    </div>
+  </div>
+
+  <div class="cols">
+    <div>
+      <div class="label">Ship to</div>
+      <strong>{{ order.ship_name }}</strong><br>
+      {{ order.ship_line1 }}{% if order.ship_line2 %}, {{ order.ship_line2 }}{% endif %}<br>
+      {% if order.ship_landmark %}{{ order.ship_landmark }}<br>{% endif %}
+      {{ order.ship_city }}, {{ order.ship_state }} {{ order.ship_pincode }}<br>
+      {{ order.phone }}
+    </div>
+    <div>
+      <div class="label">Order details</div>
+      Shipping: {{ order.get_shipping_method_display }}<br>
+      Place of supply: {{ order.ship_state }}<br>
+      {% if order.payment_method == "cod" %}<strong>Collect on delivery: ₹{{ order.total }}</strong>{% else %}Payment: {{ order.get_payment_status_display }}{% endif %}
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th><th>SKU</th>{% if not packing_slip %}<th>HSN</th>{% endif %}<th class="r">Qty</th>
+        {% if not packing_slip %}<th class="r">Taxable</th><th class="r">GST</th><th class="r">Total</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td><strong>{{ row.item.product_name }}</strong>{% if row.item.variant_label %}<br><span class="muted">{{ row.item.variant_label }}</span>{% endif %}</td>
+        <td>{{ row.item.sku }}</td>
+        {% if not packing_slip %}<td>{{ row.item.hsn_code }}</td>{% endif %}
+        <td class="r">{{ row.item.quantity }}</td>
+        {% if not packing_slip %}
+        <td class="r">₹{{ row.taxable }}</td>
+        <td class="r">₹{{ row.tax }}<br><span class="muted">{{ row.item.gst_rate|floatformat:"-2" }}%</span></td>
+        <td class="r">₹{{ row.total }}</td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if not packing_slip %}
+  <table class="totals">
+    <tr><td>Taxable value</td><td class="r">₹{{ taxable_total }}</td></tr>
+    {% if intra_state %}
+    <tr><td>CGST</td><td class="r">₹{{ cgst }}</td></tr>
+    <tr><td>SGST</td><td class="r">₹{{ sgst }}</td></tr>
+    {% else %}
+    <tr><td>IGST</td><td class="r">₹{{ igst }}</td></tr>
+    {% endif %}
+    {% if order.shipping_total %}<tr><td>Shipping</td><td class="r">₹{{ order.shipping_total }}</td></tr>{% endif %}
+    {% if order.cod_fee %}<tr><td>COD fee</td><td class="r">₹{{ order.cod_fee }}</td></tr>{% endif %}
+    {% if order.gift_wrap_fee %}<tr><td>Gift wrap</td><td class="r">₹{{ order.gift_wrap_fee }}</td></tr>{% endif %}
+    {% if order.gift_card_amount %}<tr><td>Gift card</td><td class="r">−₹{{ order.gift_card_amount }}</td></tr>{% endif %}
+    <tr class="grand"><td>{% if order.payment_method == "cod" %}Amount due{% else %}Total{% endif %}</td><td class="r">₹{{ order.total }}</td></tr>
+  </table>
+  {% if order.discount_total %}<p class="muted">Includes a discount of ₹{{ order.discount_total }}{% if order.coupon_code %} ({{ order.coupon_code }}){% endif %}.</p>{% endif %}
+  {% endif %}
+
+  {% if order.gift_wrap or order.customer_note %}
+  <div class="note">
+    {% if order.gift_wrap %}<strong>Gift wrap this order.</strong>{% if order.gift_note %} Note for the card: “{{ order.gift_note }}”{% endif %}<br>{% endif %}
+    {% if order.customer_note and packing_slip %}Customer note: {{ order.customer_note }}{% endif %}
+  </div>
+  {% endif %}
+
+  <div class="foot">Draped in Grace. Defined by You.<br><span style="font-size:11px">{{ site.contact_email }}</span></div>
+</div>
+</body>
+</html>

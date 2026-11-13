@@ -1,0 +1,4 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h1 style="font-family:Georgia,serif;font-weight:500;font-size:26px;margin:0 0 12px;">Your login code</h1><p>Enter this code to sign in. It is valid for 10 minutes.</p><p style="font-size:34px;letter-spacing:.3em;text-align:center;font-family:Georgia,serif;background:#F5EDE4;border-radius:14px;padding:18px 0;margin:22px 0;">{{ code }}</p><p style="font-size:13px;color:#7B4F3A;">If you did not ask for this, you can safely ignore this email.</p>
+{% endblock %}

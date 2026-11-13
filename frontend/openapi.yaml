@@ -1,0 +1,4089 @@
+openapi: 3.0.3
+info:
+  title: Haya & Haze API
+  version: 1.0.0
+  description: Storefront API for the Haya & Haze modest fashion store.
+paths:
+  /api/v1/account/addresses/:
+    get:
+      operationId: account_addresses_list
+      tags:
+      - account
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Address'
+          description: ''
+    post:
+      operationId: account_addresses_create
+      tags:
+      - account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AddressRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AddressRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: ''
+  /api/v1/account/addresses/{id}/:
+    get:
+      operationId: account_addresses_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this address.
+        required: true
+      tags:
+      - account
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: ''
+    put:
+      operationId: account_addresses_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this address.
+        required: true
+      tags:
+      - account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AddressRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AddressRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: ''
+    patch:
+      operationId: account_addresses_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this address.
+        required: true
+      tags:
+      - account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAddressRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAddressRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAddressRequest'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+          description: ''
+    delete:
+      operationId: account_addresses_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this address.
+        required: true
+      tags:
+      - account
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/auth/csrf/:
+    get:
+      operationId: auth_csrf_retrieve
+      description: Issues the CSRF cookie the storefront echoes back on unsafe requests.
+      tags:
+      - auth
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  csrfToken:
+                    type: string
+          description: ''
+  /api/v1/auth/google/:
+    post:
+      operationId: auth_google_create
+      description: Exchange a Google OAuth authorisation code for a session.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocialLoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SocialLoginRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SocialLoginRequest'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SocialLogin'
+          description: ''
+  /api/v1/auth/login/:
+    post:
+      operationId: auth_login_create
+      description: |-
+        Check the credentials and return the REST Token
+        if the credentials are valid and authenticated.
+        Calls Django Auth login method to register User ID
+        in Django session framework
+
+        Accept the following POST parameters: username, password
+        Return the REST Framework Token Object's key.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Login'
+          description: ''
+  /api/v1/auth/logout/:
+    post:
+      operationId: auth_logout_create
+      description: |-
+        Calls Django logout method and delete the Token object
+        assigned to the current User object.
+
+        Accepts/Returns nothing.
+      tags:
+      - auth
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/v1/auth/otp/request/:
+    post:
+      operationId: auth_otp_request_create
+      description: Email a 6-digit login code. Works for new and returning customers.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OTPRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OTPRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OTPRequestRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/v1/auth/otp/verify/:
+    post:
+      operationId: auth_otp_verify_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OTPVerifyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OTPVerifyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OTPVerifyRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/v1/auth/password/change/:
+    post:
+      operationId: auth_password_change_create
+      description: |-
+        Calls Django Auth SetPasswordForm save method.
+
+        Accepts the following POST parameters: new_password1, new_password2
+        Returns the success/fail message.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordChangeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordChangeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordChangeRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/v1/auth/password/reset/:
+    post:
+      operationId: auth_password_reset_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequestRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/v1/auth/password/reset/confirm/:
+    post:
+      operationId: auth_password_reset_confirm_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirmRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirmRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirmRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/v1/auth/register/:
+    post:
+      operationId: auth_register_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/v1/auth/token/refresh/:
+    post:
+      operationId: auth_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/v1/auth/user/:
+    get:
+      operationId: auth_user_retrieve
+      description: |-
+        Reads and updates UserModel fields
+        Accepts GET, PUT, PATCH methods.
+
+        Default accepted fields: username, first_name, last_name
+        Default display fields: pk, username, email, first_name, last_name
+        Read-only fields: pk, email
+
+        Returns UserModel fields.
+      tags:
+      - auth
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: auth_user_update
+      description: |-
+        Reads and updates UserModel fields
+        Accepts GET, PUT, PATCH methods.
+
+        Default accepted fields: username, first_name, last_name
+        Default display fields: pk, username, email, first_name, last_name
+        Read-only fields: pk, email
+
+        Returns UserModel fields.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: auth_user_partial_update
+      description: |-
+        Reads and updates UserModel fields
+        Accepts GET, PUT, PATCH methods.
+
+        Default accepted fields: username, first_name, last_name
+        Default display fields: pk, username, email, first_name, last_name
+        Read-only fields: pk, email
+
+        Returns UserModel fields.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/v1/back-in-stock/:
+    post:
+      operationId: back_in_stock_create
+      tags:
+      - back-in-stock
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BackInStockRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BackInStockRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BackInStockRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/v1/cart/:
+    get:
+      operationId: cart_retrieve
+      description: The current bag with server-calculated totals.
+      parameters:
+      - in: query
+        name: payment_method
+        schema:
+          type: string
+        description: razorpay, cod or stripe
+      - in: query
+        name: shipping_method
+        schema:
+          type: string
+        description: standard or express
+      tags:
+      - cart
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+    patch:
+      operationId: cart_partial_update
+      tags:
+      - cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateCartRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateCartRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateCartRequest'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+  /api/v1/cart/coupon/:
+    post:
+      operationId: cart_coupon_create
+      tags:
+      - cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CodeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CodeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CodeRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+    delete:
+      operationId: cart_coupon_destroy
+      tags:
+      - cart
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/cart/gift-card/:
+    post:
+      operationId: cart_gift_card_create
+      tags:
+      - cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CodeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CodeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CodeRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+    delete:
+      operationId: cart_gift_card_destroy
+      tags:
+      - cart
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/cart/items/:
+    post:
+      operationId: cart_items_create
+      tags:
+      - cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddItemRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AddItemRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AddItemRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+  /api/v1/cart/items/{item_id}/:
+    patch:
+      operationId: cart_items_partial_update
+      parameters:
+      - in: path
+        name: item_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - cart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateItemRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateItemRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateItemRequest'
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+    delete:
+      operationId: cart_items_destroy
+      parameters:
+      - in: path
+        name: item_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - cart
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/categories/:
+    get:
+      operationId: categories_list
+      tags:
+      - categories
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+          description: ''
+  /api/v1/checkout/place/:
+    post:
+      operationId: checkout_place_create
+      description: |-
+        Create the order. Prices, stock and coupons are all re-checked here; nothing
+        the client sends is trusted beyond the address and the chosen methods.
+      tags:
+      - checkout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlaceOrderRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PlaceOrderRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PlaceOrderRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaceOrderResponse'
+          description: ''
+  /api/v1/collections/:
+    get:
+      operationId: collections_list
+      tags:
+      - collections
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collection'
+          description: ''
+  /api/v1/collections/{slug}/:
+    get:
+      operationId: collections_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - collections
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+          description: ''
+  /api/v1/contact/:
+    post:
+      operationId: contact_create
+      tags:
+      - contact
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ContactRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ContactRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Detail'
+          description: ''
+  /api/v1/content/home/:
+    get:
+      operationId: content_home
+      tags:
+      - content
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+          description: ''
+  /api/v1/content/journal/:
+    get:
+      operationId: content_journal
+      tags:
+      - content
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+          description: ''
+  /api/v1/content/journal/{slug}/:
+    get:
+      operationId: content_journal_post
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - content
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+          description: ''
+  /api/v1/content/pages/:
+    get:
+      operationId: content_pages
+      description: Slugs of every published page, for the sitemap.
+      tags:
+      - content
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+          description: ''
+  /api/v1/content/pages/{slug}/:
+    get:
+      operationId: content_page
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - content
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+          description: ''
+  /api/v1/content/preview/{key}/:
+    get:
+      operationId: content_preview
+      parameters:
+      - in: path
+        name: key
+        schema:
+          type: string
+        required: true
+      tags:
+      - content
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+          description: ''
+  /api/v1/newsletter/:
+    post:
+      operationId: newsletter_create
+      tags:
+      - newsletter
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscribeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SubscribeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SubscribeRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscribeResponse'
+          description: ''
+  /api/v1/orders/:
+    get:
+      operationId: orders_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - orders
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOrderListList'
+          description: ''
+  /api/v1/orders/{number}/:
+    get:
+      operationId: orders_retrieve
+      parameters:
+      - in: path
+        name: number
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: token
+        schema:
+          type: string
+        description: Guest access token
+      tags:
+      - orders
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/orders/{number}/cancel/:
+    post:
+      operationId: orders_cancel_create
+      parameters:
+      - in: path
+        name: number
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: token
+        schema:
+          type: string
+        description: Guest access token
+      tags:
+      - orders
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/orders/{number}/invoice/:
+    get:
+      operationId: orders_invoice_retrieve
+      parameters:
+      - in: path
+        name: number
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: token
+        schema:
+          type: string
+        description: Guest access token
+      tags:
+      - orders
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+          description: ''
+  /api/v1/orders/{number}/reorder/:
+    post:
+      operationId: orders_reorder_create
+      parameters:
+      - in: path
+        name: number
+        schema:
+          type: string
+        required: true
+      tags:
+      - orders
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  added:
+                    type: integer
+                  skipped:
+                    type: integer
+          description: ''
+  /api/v1/orders/track/:
+    post:
+      operationId: orders_track_create
+      description: Guests look up an order with its number and the email used at checkout.
+      tags:
+      - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackOrderRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TrackOrderRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TrackOrderRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaceOrderResponse'
+          description: ''
+  /api/v1/payments/methods/:
+    get:
+      operationId: payments_methods_list
+      description: Online payment methods that are configured. COD is governed by
+        cart totals.
+      tags:
+      - payments
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaymentMethod'
+          description: ''
+  /api/v1/payments/razorpay/verify/:
+    post:
+      operationId: payments_razorpay_verify_create
+      description: Client callback after Razorpay Checkout. The signature is verified
+        server-side.
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RazorpayVerifyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RazorpayVerifyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RazorpayVerifyRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/payments/retry/{number}/:
+    post:
+      operationId: payments_retry_create
+      parameters:
+      - in: path
+        name: number
+        schema:
+          type: string
+        required: true
+      tags:
+      - payments
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+          description: ''
+  /api/v1/payments/sandbox/pay/:
+    post:
+      operationId: payments_sandbox_pay_create
+      description: |-
+        Stands in for the Razorpay popup when no keys are configured in DEBUG.
+
+        It produces a correctly signed confirmation and runs it through the same
+        verification path as a real payment. Refused outright outside sandbox mode.
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SandboxRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SandboxRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SandboxRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/payments/stripe/verify/:
+    post:
+      operationId: payments_stripe_verify_create
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StripeVerifyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StripeVerifyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StripeVerifyRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/products/:
+    get:
+      operationId: products_list
+      description: Products with filters, search, sorting and pagination.
+      parameters:
+      - in: query
+        name: category
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: collection
+        schema:
+          type: string
+      - in: query
+        name: color
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: fabric
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: ids
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: in_stock
+        schema:
+          type: boolean
+      - in: query
+        name: in_wardrobe
+        schema:
+          type: boolean
+      - in: query
+        name: is_bestseller
+        schema:
+          type: boolean
+      - in: query
+        name: is_featured
+        schema:
+          type: boolean
+      - in: query
+        name: is_new
+        schema:
+          type: boolean
+      - in: query
+        name: max_price
+        schema:
+          type: number
+      - in: query
+        name: min_price
+        schema:
+          type: number
+      - in: query
+        name: occasion
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: on_sale
+        schema:
+          type: boolean
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+      - in: query
+        name: size
+        schema:
+          type: array
+          items:
+            type: string
+        description: Multiple values may be separated by commas.
+        explode: false
+        style: form
+      - in: query
+        name: sort
+        schema:
+          type: string
+          enum:
+          - bestselling
+          - featured
+          - newest
+          - price_asc
+          - price_desc
+          - rating
+        description: |-
+          * `featured` - featured
+          * `newest` - newest
+          * `price_asc` - price_asc
+          * `price_desc` - price_desc
+          * `bestselling` - bestselling
+          * `rating` - rating
+      - in: query
+        name: top_pick
+        schema:
+          type: boolean
+      tags:
+      - products
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProductCardList'
+          description: ''
+  /api/v1/products/{slug}/:
+    get:
+      operationId: products_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDetail'
+          description: ''
+  /api/v1/products/{slug}/reviews/:
+    get:
+      operationId: products_reviews_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewSummary'
+          description: ''
+    post:
+      operationId: products_reviews_create
+      description: Submit a review. It appears once the team has approved it.
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReviewCreateRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Review'
+          description: ''
+  /api/v1/products/facets/:
+    get:
+      operationId: products_facets_retrieve
+      description: Filter options (with counts) for a collection or a search.
+      parameters:
+      - in: query
+        name: collection
+        schema:
+          type: string
+      - in: query
+        name: q
+        schema:
+          type: string
+      tags:
+      - products
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Facets'
+          description: ''
+  /api/v1/products/suggest/:
+    get:
+      operationId: products_suggest_retrieve
+      description: Predictive search for the header search box.
+      parameters:
+      - in: query
+        name: q
+        schema:
+          type: string
+        required: true
+      tags:
+      - products
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Suggest'
+          description: ''
+  /api/v1/returns/:
+    get:
+      operationId: returns_list
+      tags:
+      - returns
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReturnRequest'
+          description: ''
+    post:
+      operationId: returns_create
+      description: Ask to return or exchange delivered items (within 7 days of delivery).
+      tags:
+      - returns
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReturnCreateRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReturnRequest'
+          description: ''
+  /api/v1/reviews/featured/:
+    get:
+      operationId: reviews_featured_list
+      description: Reviews hand-picked for the home page carousel.
+      tags:
+      - reviews
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+          description: ''
+  /api/v1/shipping/pincode/{pincode}/:
+    get:
+      operationId: shipping_pincode_retrieve
+      description: Delivery estimate, COD availability and city/state for a pincode.
+      parameters:
+      - in: path
+        name: pincode
+        schema:
+          type: string
+        required: true
+      tags:
+      - shipping
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pincode'
+          description: ''
+  /api/v1/site/:
+    get:
+      operationId: site_retrieve
+      description: 'Public store configuration: contact details, shipping rules, announcements.'
+      tags:
+      - site
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteConfig'
+          description: ''
+  /api/v1/wishlist/:
+    get:
+      operationId: wishlist_list
+      tags:
+      - wishlist
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WishlistItem'
+          description: ''
+    post:
+      operationId: wishlist_create
+      tags:
+      - wishlist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WishlistAddRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/WishlistAddRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/WishlistAddRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WishlistItem'
+          description: ''
+    put:
+      operationId: wishlist_update
+      description: Merge a guest's locally saved wishlist into the account after login.
+      tags:
+      - wishlist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WishlistSyncRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/WishlistSyncRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/WishlistSyncRequest'
+        required: true
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WishlistItem'
+          description: ''
+  /api/v1/wishlist/{product_id}/:
+    delete:
+      operationId: wishlist_destroy
+      parameters:
+      - in: path
+        name: product_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - wishlist
+      security:
+      - jwtHeaderAuth: []
+      - jwtCookieAuth: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    AddItemRequest:
+      type: object
+      properties:
+        variant_id:
+          type: integer
+        quantity:
+          type: integer
+          maximum: 10
+          minimum: 1
+          default: 1
+      required:
+      - variant_id
+    Address:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        full_name:
+          type: string
+          maxLength: 120
+        phone:
+          type: string
+          maxLength: 20
+        line1:
+          type: string
+          title: Address line 1
+          maxLength: 200
+        line2:
+          type: string
+          title: Address line 2
+          maxLength: 200
+        landmark:
+          type: string
+          maxLength: 120
+        city:
+          type: string
+          maxLength: 80
+        state:
+          type: string
+          maxLength: 80
+        pincode:
+          type: string
+          maxLength: 10
+        country:
+          type: string
+          maxLength: 2
+        is_default:
+          type: boolean
+      required:
+      - city
+      - full_name
+      - id
+      - line1
+      - phone
+      - pincode
+      - state
+    AddressRequest:
+      type: object
+      properties:
+        full_name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+        line1:
+          type: string
+          minLength: 1
+          title: Address line 1
+          maxLength: 200
+        line2:
+          type: string
+          title: Address line 2
+          maxLength: 200
+        landmark:
+          type: string
+          maxLength: 120
+        city:
+          type: string
+          minLength: 1
+          maxLength: 80
+        state:
+          type: string
+          minLength: 1
+          maxLength: 80
+        pincode:
+          type: string
+          minLength: 1
+          maxLength: 10
+        country:
+          type: string
+          minLength: 1
+          maxLength: 2
+        is_default:
+          type: boolean
+      required:
+      - city
+      - full_name
+      - line1
+      - phone
+      - pincode
+      - state
+    Announcement:
+      type: object
+      properties:
+        text:
+          type: string
+          maxLength: 140
+        link:
+          type: string
+          maxLength: 200
+      required:
+      - text
+    BackInStockRequest:
+      type: object
+      properties:
+        variant_id:
+          type: integer
+        email:
+          type: string
+          format: email
+          minLength: 1
+      required:
+      - email
+      - variant_id
+    BlankEnum:
+      enum:
+      - ''
+    Cart:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartLine'
+        saved:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartLine'
+        upsell:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductCard'
+        item_count:
+          type: integer
+        subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        discount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        coupon_code:
+          type: string
+        coupon_message:
+          type: string
+        shipping_method:
+          type: string
+        shipping:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        shipping_free:
+          type: boolean
+        free_shipping_threshold:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        free_shipping_remaining:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        cod_fee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        cod_available:
+          type: boolean
+        cod_unavailable_reason:
+          type: string
+        gift_wrap:
+          type: boolean
+        gift_wrap_fee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        gift_wrap_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        gift_note:
+          type: string
+        order_note:
+          type: string
+        tax_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        tax_included:
+          type: boolean
+        gift_card_code:
+          type: string
+        gift_card_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        issues:
+          type: array
+          items:
+            type: string
+      required:
+      - cod_available
+      - cod_fee
+      - cod_unavailable_reason
+      - coupon_code
+      - coupon_message
+      - discount
+      - free_shipping_remaining
+      - free_shipping_threshold
+      - gift_card_amount
+      - gift_card_code
+      - gift_note
+      - gift_wrap
+      - gift_wrap_fee
+      - gift_wrap_price
+      - issues
+      - item_count
+      - items
+      - order_note
+      - saved
+      - shipping
+      - shipping_free
+      - shipping_method
+      - subtotal
+      - tax_included
+      - tax_total
+      - total
+      - upsell
+    CartLine:
+      type: object
+      properties:
+        id:
+          type: integer
+        variant_id:
+          type: integer
+        product_id:
+          type: integer
+        slug:
+          type: string
+        name:
+          type: string
+        variant_label:
+          type: string
+        color_hex:
+          type: string
+        image:
+          type: string
+          nullable: true
+        collection:
+          type: string
+        quantity:
+          type: integer
+        max_quantity:
+          type: integer
+        unit_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        compare_at_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        line_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        discount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+      required:
+      - collection
+      - color_hex
+      - compare_at_price
+      - discount
+      - id
+      - image
+      - line_total
+      - max_quantity
+      - name
+      - product_id
+      - quantity
+      - slug
+      - unit_price
+      - variant_id
+      - variant_label
+    Category:
+      type: object
+      properties:
+        slug:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        name:
+          type: string
+          maxLength: 80
+        description:
+          type: string
+        size_guide:
+          type: string
+          description: Shown in the size guide modal. Plain text or simple HTML table.
+      required:
+      - name
+      - slug
+    CheckoutAddressRequest:
+      type: object
+      properties:
+        full_name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        line1:
+          type: string
+          minLength: 1
+          maxLength: 200
+        line2:
+          type: string
+          default: ''
+          maxLength: 200
+        landmark:
+          type: string
+          default: ''
+          maxLength: 120
+        city:
+          type: string
+          minLength: 1
+          maxLength: 80
+        state:
+          type: string
+          minLength: 1
+          maxLength: 80
+        pincode:
+          type: string
+          minLength: 1
+          maxLength: 10
+        country:
+          type: string
+          minLength: 1
+          default: IN
+          maxLength: 2
+      required:
+      - city
+      - full_name
+      - line1
+      - pincode
+      - state
+    CodeRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 30
+      required:
+      - code
+    Collection:
+      type: object
+      properties:
+        slug:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        name:
+          type: string
+          maxLength: 80
+        tagline:
+          type: string
+          maxLength: 160
+        description:
+          type: string
+        image:
+          type: string
+          nullable: true
+          readOnly: true
+        accent_color:
+          type: string
+          maxLength: 7
+        is_featured:
+          type: boolean
+          description: Show in the home page collection grid and menus.
+        product_count:
+          type: integer
+          readOnly: true
+          default: 0
+        seo_title:
+          type: string
+          maxLength: 70
+        seo_description:
+          type: string
+          maxLength: 170
+      required:
+      - image
+      - name
+      - product_count
+      - slug
+    CollectionRef:
+      type: object
+      properties:
+        slug:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        name:
+          type: string
+          maxLength: 80
+      required:
+      - name
+      - slug
+    ContactRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        email:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        phone:
+          type: string
+          maxLength: 20
+        subject:
+          type: string
+          maxLength: 160
+        message:
+          type: string
+          minLength: 1
+      required:
+      - email
+      - message
+      - name
+    Detail:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    FabricEnum:
+      enum:
+      - silk
+      - chiffon
+      - georgette
+      - modal
+      - viscose
+      - jersey
+      - crepe
+      - nida
+      type: string
+      description: |-
+        * `silk` - Silk
+        * `chiffon` - Chiffon
+        * `georgette` - Georgette
+        * `modal` - Modal
+        * `viscose` - Viscose
+        * `jersey` - Jersey
+        * `crepe` - Crepe
+        * `nida` - Nida
+    FacetOption:
+      type: object
+      properties:
+        value:
+          type: string
+        label:
+          type: string
+        count:
+          type: integer
+        hex:
+          type: string
+      required:
+      - count
+      - label
+      - value
+    Facets:
+      type: object
+      properties:
+        colors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetOption'
+        sizes:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetOption'
+        fabrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetOption'
+        occasions:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetOption'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/FacetOption'
+        min_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        max_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+      required:
+      - categories
+      - colors
+      - fabrics
+      - max_price
+      - min_price
+      - occasions
+      - sizes
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          oneOf:
+          - type: string
+            format: email
+          - type: string
+            maxLength: 0
+        password:
+          type: string
+      required:
+      - password
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          oneOf:
+          - type: string
+            format: email
+          - type: string
+            maxLength: 0
+        password:
+          type: string
+          minLength: 1
+      required:
+      - password
+    Media:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        kind:
+          $ref: '#/components/schemas/MediaKindEnum'
+        image:
+          type: string
+          nullable: true
+          readOnly: true
+        video_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        alt_text:
+          type: string
+          maxLength: 160
+        color_name:
+          type: string
+          description: Show this image when the colour is selected.
+          maxLength: 40
+      required:
+      - id
+      - image
+    MediaKindEnum:
+      enum:
+      - image
+      - video
+      type: string
+      description: |-
+        * `image` - Image
+        * `video` - Video
+    OTPRequestRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+      required:
+      - email
+    OTPVerifyRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+        code:
+          type: string
+          minLength: 1
+          pattern: ^\d{6}$
+      required:
+      - code
+      - email
+    OccasionEnum:
+      enum:
+      - everyday
+      - work
+      - festive
+      - wedding
+      - travel
+      - prayer
+      type: string
+      description: |-
+        * `everyday` - Everyday
+        * `work` - Work
+        * `festive` - Festive & Eid
+        * `wedding` - Wedding
+        * `travel` - Travel
+        * `prayer` - Prayer
+    Order:
+      type: object
+      properties:
+        number:
+          type: string
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/OrderStatusEnum'
+        status_label:
+          type: string
+          readOnly: true
+        payment_status:
+          $ref: '#/components/schemas/PaymentStatusEnum'
+        payment_method:
+          $ref: '#/components/schemas/OrderPaymentMethodEnum'
+        payment_method_label:
+          type: string
+          readOnly: true
+        shipping_method:
+          $ref: '#/components/schemas/ShippingMethodEnum'
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        phone:
+          type: string
+          maxLength: 20
+        ship_name:
+          type: string
+          maxLength: 120
+        ship_line1:
+          type: string
+          maxLength: 200
+        ship_line2:
+          type: string
+          maxLength: 200
+        ship_landmark:
+          type: string
+          maxLength: 120
+        ship_city:
+          type: string
+          maxLength: 80
+        ship_state:
+          type: string
+          maxLength: 80
+        ship_pincode:
+          type: string
+          maxLength: 10
+        subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        discount_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        shipping_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        cod_fee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        gift_wrap_fee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        tax_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        tax_included:
+          type: boolean
+        gift_card_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          description: Amount payable after gift card.
+        grand_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+        refunded_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        coupon_code:
+          type: string
+          maxLength: 30
+        gift_wrap:
+          type: boolean
+        gift_note:
+          type: string
+          maxLength: 300
+        customer_note:
+          type: string
+          maxLength: 500
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        placed_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the order was confirmed.
+        delivered_at:
+          type: string
+          format: date-time
+          nullable: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+          readOnly: true
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderEvent'
+          readOnly: true
+        shipments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shipment'
+          readOnly: true
+        is_cancellable:
+          type: boolean
+          readOnly: true
+        is_returnable:
+          type: boolean
+          readOnly: true
+        progress:
+          type: integer
+          description: Index in the normal fulfilment flow (0-5), or -1 when cancelled/returned.
+          readOnly: true
+      required:
+      - created_at
+      - email
+      - events
+      - grand_total
+      - is_cancellable
+      - is_returnable
+      - items
+      - number
+      - payment_method
+      - payment_method_label
+      - phone
+      - progress
+      - ship_city
+      - ship_line1
+      - ship_name
+      - ship_pincode
+      - ship_state
+      - shipments
+      - status_label
+      - subtotal
+      - total
+    OrderEvent:
+      type: object
+      properties:
+        status:
+          oneOf:
+          - $ref: '#/components/schemas/OrderStatusEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        status_label:
+          type: string
+          readOnly: true
+        note:
+          type: string
+          maxLength: 300
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - status_label
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product_name:
+          type: string
+          maxLength: 140
+        product_slug:
+          type: string
+          maxLength: 160
+        variant_label:
+          type: string
+          maxLength: 80
+        sku:
+          type: string
+          maxLength: 60
+        image:
+          type: string
+          maxLength: 300
+        unit_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        quantity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        line_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        discount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+      required:
+      - id
+      - line_total
+      - product_name
+      - quantity
+      - sku
+      - unit_price
+    OrderList:
+      type: object
+      properties:
+        number:
+          type: string
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/OrderStatusEnum'
+        status_label:
+          type: string
+          readOnly: true
+        payment_status:
+          $ref: '#/components/schemas/PaymentStatusEnum'
+        grand_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+        item_count:
+          type: integer
+          readOnly: true
+        thumbnails:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - grand_total
+      - item_count
+      - number
+      - status_label
+      - thumbnails
+    OrderPaymentMethodEnum:
+      enum:
+      - razorpay
+      - cod
+      - stripe
+      - gift_card
+      type: string
+      description: |-
+        * `razorpay` - Razorpay (UPI, cards, netbanking)
+        * `cod` - Cash on Delivery
+        * `stripe` - Stripe (international cards)
+        * `gift_card` - Gift card
+    OrderStatusEnum:
+      enum:
+      - pending
+      - confirmed
+      - packed
+      - shipped
+      - out_for_delivery
+      - delivered
+      - cancelled
+      - returned
+      - refunded
+      type: string
+      description: |-
+        * `pending` - Pending payment
+        * `confirmed` - Confirmed
+        * `packed` - Packed
+        * `shipped` - Shipped
+        * `out_for_delivery` - Out for delivery
+        * `delivered` - Delivered
+        * `cancelled` - Cancelled
+        * `returned` - Returned
+        * `refunded` - Refunded
+    OutcomeEnum:
+      enum:
+      - success
+      - failure
+      type: string
+      description: |-
+        * `success` - success
+        * `failure` - failure
+    PaginatedOrderListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderList'
+    PaginatedProductCardList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductCard'
+    PasswordChangeRequest:
+      type: object
+      properties:
+        old_password:
+          type: string
+          minLength: 1
+          maxLength: 128
+        new_password1:
+          type: string
+          minLength: 1
+          maxLength: 128
+        new_password2:
+          type: string
+          minLength: 1
+          maxLength: 128
+      required:
+      - new_password1
+      - new_password2
+      - old_password
+    PasswordResetConfirmRequest:
+      type: object
+      properties:
+        uid:
+          type: string
+          minLength: 1
+        token:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+          maxLength: 128
+      required:
+      - password
+      - token
+      - uid
+    PasswordResetRequestRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+      required:
+      - email
+    PatchedAddressRequest:
+      type: object
+      properties:
+        full_name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+        line1:
+          type: string
+          minLength: 1
+          title: Address line 1
+          maxLength: 200
+        line2:
+          type: string
+          title: Address line 2
+          maxLength: 200
+        landmark:
+          type: string
+          maxLength: 120
+        city:
+          type: string
+          minLength: 1
+          maxLength: 80
+        state:
+          type: string
+          minLength: 1
+          maxLength: 80
+        pincode:
+          type: string
+          minLength: 1
+          maxLength: 10
+        country:
+          type: string
+          minLength: 1
+          maxLength: 2
+        is_default:
+          type: boolean
+    PatchedUpdateCartRequest:
+      type: object
+      properties:
+        gift_wrap:
+          type: boolean
+        gift_note:
+          type: string
+          maxLength: 300
+        order_note:
+          type: string
+          maxLength: 500
+        email:
+          type: string
+          format: email
+          minLength: 1
+    PatchedUpdateItemRequest:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          maximum: 10
+          minimum: 0
+        saved_for_later:
+          type: boolean
+        variant_id:
+          type: integer
+    PatchedUserRequest:
+      type: object
+      properties:
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone:
+          type: string
+          maxLength: 20
+        accepts_marketing:
+          type: boolean
+    PaymentMethod:
+      type: object
+      properties:
+        code:
+          type: string
+        label:
+          type: string
+        sandbox:
+          type: boolean
+      required:
+      - code
+      - label
+      - sandbox
+    PaymentStatusEnum:
+      enum:
+      - pending
+      - paid
+      - failed
+      - refunded
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `paid` - Paid
+        * `failed` - Failed
+        * `refunded` - Refunded
+    Pincode:
+      type: object
+      properties:
+        pincode:
+          type: string
+        serviceable:
+          type: boolean
+        cod_available:
+          type: boolean
+        city:
+          type: string
+        state:
+          type: string
+        standard_days:
+          type: string
+        express_days:
+          type: string
+        standard_eta:
+          type: string
+        express_eta:
+          type: string
+        message:
+          type: string
+      required:
+      - city
+      - cod_available
+      - express_days
+      - express_eta
+      - message
+      - pincode
+      - serviceable
+      - standard_days
+      - standard_eta
+      - state
+    PlaceOrderPaymentMethodEnum:
+      enum:
+      - razorpay
+      - cod
+      - stripe
+      type: string
+      description: |-
+        * `razorpay` - razorpay
+        * `cod` - cod
+        * `stripe` - stripe
+    PlaceOrderRequest:
+      type: object
+      properties:
+        idempotency_key:
+          type: string
+          minLength: 16
+          maxLength: 64
+        email:
+          type: string
+          format: email
+          minLength: 1
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+        address:
+          $ref: '#/components/schemas/CheckoutAddressRequest'
+        shipping_method:
+          allOf:
+          - $ref: '#/components/schemas/ShippingMethodEnum'
+          default: standard
+        payment_method:
+          $ref: '#/components/schemas/PlaceOrderPaymentMethodEnum'
+        save_address:
+          type: boolean
+          default: false
+        subscribe:
+          type: boolean
+          default: false
+      required:
+      - address
+      - email
+      - idempotency_key
+      - payment_method
+      - phone
+    PlaceOrderResponse:
+      type: object
+      properties:
+        order:
+          $ref: '#/components/schemas/Order'
+        payment:
+          type: object
+          additionalProperties: {}
+          nullable: true
+        access_token:
+          type: string
+          description: Lets a guest view this order without signing in.
+      required:
+      - access_token
+      - order
+      - payment
+    ProductCard:
+      type: object
+      description: Everything a product card, quick view and the 3D sections need.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slug:
+          type: string
+          maxLength: 160
+          pattern: ^[-a-zA-Z0-9_]+$
+        name:
+          type: string
+          maxLength: 140
+        subtitle:
+          type: string
+          maxLength: 160
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        compare_at_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        discount_percent:
+          type: integer
+          readOnly: true
+        collection:
+          allOf:
+          - $ref: '#/components/schemas/CollectionRef'
+          readOnly: true
+        category:
+          type: string
+          readOnly: true
+        fabric:
+          $ref: '#/components/schemas/FabricEnum'
+        fabric_label:
+          type: string
+          readOnly: true
+        fabric_feel:
+          type: string
+          readOnly: true
+        occasion:
+          $ref: '#/components/schemas/OccasionEnum'
+        shape_preset:
+          $ref: '#/components/schemas/ShapePresetEnum'
+        fabric_texture:
+          type: string
+          nullable: true
+          readOnly: true
+        wardrobe_placement:
+          $ref: '#/components/schemas/WardrobePlacementEnum'
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/Media'
+          readOnly: true
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Variant'
+          readOnly: true
+        swatches:
+          type: array
+          items:
+            $ref: '#/components/schemas/Swatch'
+          readOnly: true
+        in_stock:
+          type: boolean
+          readOnly: true
+        is_low_stock:
+          type: boolean
+          readOnly: true
+        is_new:
+          type: boolean
+          readOnly: true
+        is_bestseller:
+          type: boolean
+        is_featured:
+          type: boolean
+        rating_average:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,2})?$
+        rating_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+      required:
+      - category
+      - collection
+      - discount_percent
+      - fabric_feel
+      - fabric_label
+      - fabric_texture
+      - id
+      - in_stock
+      - is_low_stock
+      - is_new
+      - media
+      - name
+      - price
+      - slug
+      - swatches
+      - variants
+    ProductDetail:
+      type: object
+      description: Everything a product card, quick view and the 3D sections need.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        slug:
+          type: string
+          maxLength: 160
+          pattern: ^[-a-zA-Z0-9_]+$
+        name:
+          type: string
+          maxLength: 140
+        subtitle:
+          type: string
+          maxLength: 160
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        compare_at_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        discount_percent:
+          type: integer
+          readOnly: true
+        collection:
+          allOf:
+          - $ref: '#/components/schemas/CollectionRef'
+          readOnly: true
+        category:
+          type: string
+          readOnly: true
+        fabric:
+          $ref: '#/components/schemas/FabricEnum'
+        fabric_label:
+          type: string
+          readOnly: true
+        fabric_feel:
+          type: string
+          readOnly: true
+        occasion:
+          $ref: '#/components/schemas/OccasionEnum'
+        shape_preset:
+          $ref: '#/components/schemas/ShapePresetEnum'
+        fabric_texture:
+          type: string
+          nullable: true
+          readOnly: true
+        wardrobe_placement:
+          $ref: '#/components/schemas/WardrobePlacementEnum'
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/Media'
+          readOnly: true
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Variant'
+          readOnly: true
+        swatches:
+          type: array
+          items:
+            $ref: '#/components/schemas/Swatch'
+          readOnly: true
+        in_stock:
+          type: boolean
+          readOnly: true
+        is_low_stock:
+          type: boolean
+          readOnly: true
+        is_new:
+          type: boolean
+          readOnly: true
+        is_bestseller:
+          type: boolean
+        is_featured:
+          type: boolean
+        rating_average:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,2})?$
+        rating_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        description:
+          type: string
+        fabric_care:
+          type: string
+          title: Fabric & care
+        occasion_label:
+          type: string
+          readOnly: true
+        tags:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        size_guide:
+          type: string
+          readOnly: true
+        category_name:
+          type: string
+          readOnly: true
+        seo_title:
+          type: string
+          maxLength: 70
+        seo_description:
+          type: string
+          maxLength: 170
+        related:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductCard'
+          readOnly: true
+        complete_the_look:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductCard'
+          readOnly: true
+      required:
+      - category
+      - category_name
+      - collection
+      - complete_the_look
+      - discount_percent
+      - fabric_feel
+      - fabric_label
+      - fabric_texture
+      - id
+      - in_stock
+      - is_low_stock
+      - is_new
+      - media
+      - name
+      - occasion_label
+      - price
+      - related
+      - size_guide
+      - slug
+      - swatches
+      - tags
+      - variants
+    RazorpayVerifyRequest:
+      type: object
+      properties:
+        razorpay_order_id:
+          type: string
+          minLength: 1
+        razorpay_payment_id:
+          type: string
+          minLength: 1
+        razorpay_signature:
+          type: string
+          minLength: 1
+      required:
+      - razorpay_order_id
+      - razorpay_payment_id
+      - razorpay_signature
+    ReasonEnum:
+      enum:
+      - size
+      - colour
+      - quality
+      - damaged
+      - wrong_item
+      - other
+      type: string
+      description: |-
+        * `size` - Size or length did not fit
+        * `colour` - Colour looked different
+        * `quality` - Quality not as expected
+        * `damaged` - Arrived damaged
+        * `wrong_item` - Wrong item received
+        * `other` - Something else
+    RegisterRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+          maxLength: 128
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 60
+        last_name:
+          type: string
+          default: ''
+          maxLength: 60
+        accepts_marketing:
+          type: boolean
+          default: false
+      required:
+      - email
+      - first_name
+      - password
+    RestAuthDetail:
+      type: object
+      properties:
+        detail:
+          type: string
+          readOnly: true
+      required:
+      - detail
+    ReturnCreateRequest:
+      type: object
+      properties:
+        order_number:
+          type: string
+          minLength: 1
+        kind:
+          $ref: '#/components/schemas/ReturnKindEnum'
+        reason:
+          $ref: '#/components/schemas/ReasonEnum'
+        details:
+          type: string
+          default: ''
+          maxLength: 1000
+        items:
+          type: string
+          minLength: 1
+          description: 'JSON list: [{"order_item": 12, "quantity": 1}]'
+        photos:
+          type: array
+          items:
+            type: string
+            format: binary
+          maxItems: 4
+      required:
+      - items
+      - kind
+      - order_number
+      - reason
+    ReturnItem:
+      type: object
+      properties:
+        order_item:
+          type: integer
+        quantity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        product_name:
+          type: string
+          readOnly: true
+        variant_label:
+          type: string
+          readOnly: true
+        image:
+          type: string
+          readOnly: true
+      required:
+      - image
+      - order_item
+      - product_name
+      - variant_label
+    ReturnKindEnum:
+      enum:
+      - return
+      - exchange
+      type: string
+      description: |-
+        * `return` - Return for refund
+        * `exchange` - Exchange
+    ReturnRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        order_number:
+          type: string
+          readOnly: true
+        kind:
+          $ref: '#/components/schemas/ReturnKindEnum'
+        kind_label:
+          type: string
+          readOnly: true
+        reason:
+          $ref: '#/components/schemas/ReasonEnum'
+        reason_label:
+          type: string
+          readOnly: true
+        details:
+          type: string
+        status:
+          $ref: '#/components/schemas/ReturnStatusEnum'
+        status_label:
+          type: string
+          readOnly: true
+        refund_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        admin_note:
+          type: string
+          description: Shared with the customer in status emails.
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReturnItem'
+          readOnly: true
+        photos:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - items
+      - kind_label
+      - order_number
+      - photos
+      - reason
+      - reason_label
+      - status_label
+    ReturnStatusEnum:
+      enum:
+      - requested
+      - approved
+      - pickup_scheduled
+      - received
+      - refunded
+      - exchanged
+      - rejected
+      type: string
+      description: |-
+        * `requested` - Requested
+        * `approved` - Approved
+        * `pickup_scheduled` - Pickup scheduled
+        * `received` - Received
+        * `refunded` - Refunded
+        * `exchanged` - Exchange sent
+        * `rejected` - Rejected
+    Review:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 80
+        location:
+          type: string
+          maxLength: 80
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        title:
+          type: string
+          maxLength: 120
+        body:
+          type: string
+        photo:
+          type: string
+          nullable: true
+          readOnly: true
+        is_verified_buyer:
+          type: boolean
+        admin_reply:
+          type: string
+          title: Reply from Haya & Haze
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        product_name:
+          type: string
+          readOnly: true
+        product_slug:
+          type: string
+          readOnly: true
+      required:
+      - body
+      - created_at
+      - id
+      - name
+      - photo
+      - product_name
+      - product_slug
+      - rating
+    ReviewCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 80
+        location:
+          type: string
+          maxLength: 80
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        title:
+          type: string
+          maxLength: 120
+        body:
+          type: string
+          minLength: 1
+        photo:
+          type: string
+          format: binary
+      required:
+      - body
+      - name
+      - rating
+    ReviewSummary:
+      type: object
+      properties:
+        average:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,2})?$
+        count:
+          type: integer
+        breakdown:
+          type: object
+          additionalProperties:
+            type: integer
+        reviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+      required:
+      - average
+      - breakdown
+      - count
+      - reviews
+    SandboxRequest:
+      type: object
+      properties:
+        provider_order_id:
+          type: string
+          minLength: 1
+        outcome:
+          allOf:
+          - $ref: '#/components/schemas/OutcomeEnum'
+          default: success
+      required:
+      - provider_order_id
+    ShapePresetEnum:
+      enum:
+      - flat
+      - hanging-garment
+      - draped-over-bar
+      - folded
+      type: string
+      description: |-
+        * `flat` - Flat floating panel
+        * `hanging-garment` - Hanging garment (abaya, dress)
+        * `draped-over-bar` - Draped over a bar (hijab, scarf)
+        * `folded` - Folded on a shelf
+    Shipment:
+      type: object
+      properties:
+        awb:
+          type: string
+          title: AWB / tracking number
+          maxLength: 60
+        courier:
+          type: string
+          maxLength: 80
+        tracking_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        status:
+          $ref: '#/components/schemas/ShipmentStatusEnum'
+        status_label:
+          type: string
+          readOnly: true
+      required:
+      - status_label
+    ShipmentStatusEnum:
+      enum:
+      - created
+      - picked_up
+      - in_transit
+      - out_for_delivery
+      - delivered
+      - rto
+      - cancelled
+      type: string
+      description: |-
+        * `created` - Created
+        * `picked_up` - Picked up
+        * `in_transit` - In transit
+        * `out_for_delivery` - Out for delivery
+        * `delivered` - Delivered
+        * `rto` - Returned to origin
+        * `cancelled` - Cancelled
+    ShippingMethodEnum:
+      enum:
+      - standard
+      - express
+      type: string
+      description: |-
+        * `standard` - Standard
+        * `express` - Express
+    SiteConfig:
+      type: object
+      properties:
+        store_name:
+          type: string
+          maxLength: 80
+        tagline:
+          type: string
+          maxLength: 160
+        logo_light:
+          type: string
+          nullable: true
+          readOnly: true
+        logo_dark:
+          type: string
+          nullable: true
+          readOnly: true
+        contact_email:
+          type: string
+          format: email
+          maxLength: 254
+        contact_phone:
+          type: string
+          maxLength: 20
+        address:
+          type: string
+        whatsapp_number:
+          type: string
+          description: With country code, digits only, e.g. 919876543210.
+          maxLength: 20
+        whatsapp_message:
+          type: string
+          maxLength: 200
+        instagram_url:
+          type: string
+          format: uri
+          maxLength: 200
+        tiktok_url:
+          type: string
+          format: uri
+          maxLength: 200
+        pinterest_url:
+          type: string
+          format: uri
+          maxLength: 200
+        free_shipping_threshold:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        standard_shipping_rate:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        express_shipping_rate:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        standard_delivery_days:
+          type: string
+          maxLength: 20
+        express_delivery_days:
+          type: string
+          maxLength: 20
+        cod_enabled:
+          type: boolean
+        cod_fee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        gift_wrap_fee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        prices_include_gst:
+          type: boolean
+        hero_headline:
+          type: string
+        hero_subtext:
+          type: string
+          maxLength: 200
+        wardrobe_enabled:
+          type: boolean
+        wardrobe_title:
+          type: string
+          maxLength: 80
+        wardrobe_subtitle:
+          type: string
+          maxLength: 200
+        wardrobe_wood_tone:
+          $ref: '#/components/schemas/WardrobeWoodToneEnum'
+        wardrobe_light_warmth:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: 0 = cool daylight, 100 = warm candlelight.
+        popup_enabled:
+          type: boolean
+          title: Welcome popup enabled
+        popup_title:
+          type: string
+          maxLength: 80
+        popup_text:
+          type: string
+          maxLength: 200
+        popup_coupon_code:
+          type: string
+          maxLength: 30
+        ga4_measurement_id:
+          type: string
+          maxLength: 30
+        meta_pixel_id:
+          type: string
+          maxLength: 30
+        seo_title:
+          type: string
+          title: Default SEO title
+          maxLength: 70
+        seo_description:
+          type: string
+          title: Default SEO description
+          maxLength: 170
+        announcements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Announcement'
+          readOnly: true
+        payments_sandbox:
+          type: boolean
+          readOnly: true
+        google_client_id:
+          type: string
+          readOnly: true
+      required:
+      - announcements
+      - google_client_id
+      - logo_dark
+      - logo_light
+      - payments_sandbox
+    SocialLogin:
+      type: object
+      properties:
+        access_token:
+          type: string
+        code:
+          type: string
+        id_token:
+          type: string
+    SocialLoginRequest:
+      type: object
+      properties:
+        access_token:
+          type: string
+        code:
+          type: string
+        id_token:
+          type: string
+    StripeVerifyRequest:
+      type: object
+      properties:
+        session_id:
+          type: string
+          minLength: 1
+      required:
+      - session_id
+    SubscribeRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+        source:
+          type: string
+          minLength: 1
+          default: footer
+          maxLength: 30
+      required:
+      - email
+    SubscribeResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+        coupon_code:
+          type: string
+      required:
+      - coupon_code
+      - detail
+    Suggest:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductCard'
+        collections:
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectionRef'
+      required:
+      - collections
+      - products
+    Swatch:
+      type: object
+      properties:
+        name:
+          type: string
+        hex:
+          type: string
+      required:
+      - hex
+      - name
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+    TokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          minLength: 1
+      required:
+      - refresh
+    TrackOrderRequest:
+      type: object
+      properties:
+        number:
+          type: string
+          minLength: 1
+          maxLength: 16
+        email:
+          type: string
+          format: email
+          minLength: 1
+      required:
+      - email
+      - number
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Email address
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        full_name:
+          type: string
+          readOnly: true
+        phone:
+          type: string
+          maxLength: 20
+        accepts_marketing:
+          type: boolean
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - date_joined
+      - email
+      - full_name
+      - id
+    UserRequest:
+      type: object
+      properties:
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone:
+          type: string
+          maxLength: 20
+        accepts_marketing:
+          type: boolean
+    Variant:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        sku:
+          type: string
+          maxLength: 60
+        color_name:
+          type: string
+          maxLength: 40
+        color_hex:
+          type: string
+          maxLength: 7
+        size:
+          type: string
+          description: S, M, L, XL, XXL or Free Size.
+          maxLength: 12
+        length:
+          type: string
+          description: Abaya length in inches, e.g. 54.
+          maxLength: 6
+        label:
+          type: string
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        compare_at_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          nullable: true
+        available:
+          type: integer
+          readOnly: true
+        is_low_stock:
+          type: boolean
+          readOnly: true
+      required:
+      - available
+      - compare_at_price
+      - id
+      - is_low_stock
+      - label
+      - price
+      - sku
+    WardrobePlacementEnum:
+      enum:
+      - rail
+      - shelf
+      type: string
+      description: |-
+        * `rail` - Hanging on the rail
+        * `shelf` - Folded on a shelf
+    WardrobeWoodToneEnum:
+      enum:
+      - walnut
+      - espresso
+      - ivory
+      type: string
+      description: |-
+        * `walnut` - Walnut
+        * `espresso` - Espresso
+        * `ivory` - Ivory lacquer
+    WishlistAddRequest:
+      type: object
+      properties:
+        product_id:
+          type: integer
+      required:
+      - product_id
+    WishlistItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          allOf:
+          - $ref: '#/components/schemas/ProductCard'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - product
+    WishlistSyncRequest:
+      type: object
+      properties:
+        product_ids:
+          type: array
+          items:
+            type: integer
+          maxItems: 200
+      required:
+      - product_ids
+  securitySchemes:
+    jwtCookieAuth:
+      type: apiKey
+      in: cookie
+      name: hh_access
+    jwtHeaderAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

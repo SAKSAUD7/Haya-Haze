@@ -1,0 +1,4 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h1 style="font-family:Georgia,serif;font-weight:500;font-size:26px;margin:0 0 12px;">Your refund is on its way</h1><p>We have refunded <strong>₹{{ amount }}</strong> for order <strong>{{ order.number }}</strong> to your original payment method. Banks usually take 5 to 7 working days to show it.</p>
+{% endblock %}

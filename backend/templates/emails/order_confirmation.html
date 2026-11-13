@@ -1,0 +1,4 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h1 style="font-family:Georgia,serif;font-weight:500;font-size:26px;margin:0 0 12px;">Thank you, {{ order.ship_name }}.</h1><p>Your order <strong>{{ order.number }}</strong> is confirmed{% if order.payment_method == "cod" %}. Please keep ₹{{ order.total|floatformat:"-2" }} ready for the courier{% endif %}. We will email you again the moment it ships.</p>{% include "emails/_order_items.html" %}{% include "emails/_button.html" with url=frontend_url|add:"/track-order" label="Track your order" %}
+{% endblock %}

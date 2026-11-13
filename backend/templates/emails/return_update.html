@@ -1,0 +1,4 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h1 style="font-family:Georgia,serif;font-weight:500;font-size:26px;margin:0 0 12px;">{{ req.get_kind_display }}: {{ req.get_status_display }}</h1><p>Here is the latest on your request for order <strong>{{ order.number }}</strong>.</p><p style="background:#F5EDE4;border-radius:14px;padding:14px 18px;">Status: <strong>{{ req.get_status_display }}</strong>{% if req.refund_amount and req.kind == "return" %}<br>Refund amount: ₹{{ req.refund_amount|floatformat:"-2" }}{% endif %}{% if req.admin_note %}<br><br>{{ req.admin_note }}{% endif %}</p>{% include "emails/_button.html" with url=frontend_url|add:"/account/returns" label="View your request" %}
+{% endblock %}

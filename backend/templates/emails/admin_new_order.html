@@ -1,0 +1,4 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h1 style="font-family:Georgia,serif;font-weight:500;font-size:24px;margin:0 0 12px;">New order {{ order.number }}</h1><p>{{ order.ship_name }} · {{ order.email }} · {{ order.phone }}<br>{{ order.get_payment_method_display }}{% if order.payment_method == "cod" %} — <strong>verify before shipping</strong>{% endif %}</p>{% include "emails/_order_items.html" %}
+{% endblock %}

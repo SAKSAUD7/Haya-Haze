@@ -1,0 +1,7 @@
+/* Haya & Haze touches on top of the Unfold theme */
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap");
+#site-name, h1, .hh-serif { font-family: "Cormorant Garamond", Georgia, serif; letter-spacing: 0.01em; }
+.hh-kpi { font-family: "Cormorant Garamond", Georgia, serif; font-size: 2rem; line-height: 1.1; font-weight: 600; }
+.hh-swatch { display:inline-block; width:14px; height:14px; border-radius:999px; border:1px solid rgba(0,0,0,.15); vertical-align:middle; margin-right:6px; }
+.hh-thumb { width:44px; height:56px; object-fit:cover; border-radius:8px; background:#FAF6F2; }
+.hh-cutout { max-height:220px; border-radius:12px; background:repeating-conic-gradient(#f1e8df 0% 25%, #fff 0% 50%) 50% / 18px 18px; }

@@ -1,0 +1,4 @@
+{% extends "emails/base.html" %}
+{% block content %}
+<h1 style="font-family:Georgia,serif;font-weight:500;font-size:26px;margin:0 0 12px;">It is back.</h1><p><strong>{{ variant.product.name }}</strong>{% if variant.label %} in {{ variant.label }}{% endif %} is in stock again. Pieces like this tend to go quickly.</p>{% with path="/products/"|add:variant.product.slug %}{% include "emails/_button.html" with url=frontend_url|add:path label="Shop it now" %}{% endwith %}
+{% endblock %}
