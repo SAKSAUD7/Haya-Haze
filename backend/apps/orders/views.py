@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 
 from apps.cart import services as cart_services
 from apps.core.exceptions import CommerceError
+from apps.inventory.tasks import release_lapsed_holds_inline
 from apps.payments import services as payment_services
 from apps.promotions.models import Subscriber
 
@@ -61,6 +62,7 @@ class PlaceOrderView(APIView):
         ser = PlaceOrderSerializer(data=request.data)
         ser.is_valid(raise_exception=True)
         data = ser.validated_data
+        release_lapsed_holds_inline()
         existing = Order.objects.filter(idempotency_key=data["idempotency_key"]).first()
         if existing:
             order = existing

@@ -20,3 +20,12 @@ def release_expired_reservations() -> int:
         cancel_order(order, note="Payment was not completed in time.", notify=False)
         count += 1
     return count
+
+
+def release_lapsed_holds_inline() -> None:
+    """Without Celery beat (local mode, Render free plan) nothing runs the task above on a
+    schedule, so the shopping endpoints call this first. With a scheduler it does nothing."""
+    from django.conf import settings
+
+    if settings.CELERY_TASK_ALWAYS_EAGER:
+        release_expired_reservations()

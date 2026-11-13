@@ -291,3 +291,18 @@ def test_unserviceable_or_invalid_pincode_is_rejected(client, make_variant, cfg)
     cfg.save()
     resp = place(client, key="pin-key-00000000001")
     assert resp.status_code == 400 and resp.json()["code"] == "unserviceable"
+
+
+def test_checkout_releases_lapsed_holds_without_a_scheduler(make_variant, settings):
+    """With no Celery beat (Render free plan), the next checkout frees stock that an
+    abandoned unpaid order was holding."""
+    settings.CELERY_TASK_ALWAYS_EAGER = True
+    variant = make_variant(stock=1)
+    first, second = APIClient(), APIClient()
+    add(first, variant)
+    number = place(first, key="lapsed-hold-0000001").json()["order"]["number"]
+    StockReservation.objects.update(expires_at=timezone.now() - timedelta(minutes=1))
+
+    add(second, variant)
+    assert place(second, key="lapsed-hold-0000002").status_code == 201
+    assert Order.objects.get(number=number).status == "cancelled"

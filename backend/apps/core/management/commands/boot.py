@@ -4,6 +4,8 @@
 
 * Seeds the demo store, but only into an empty database, so edits made in the admin
   survive restarts.
+* Releases stock held by unpaid orders whose hold has lapsed (no Celery beat on the
+  free plan, so this also runs at every checkout).
 * Forgets CMS image renditions whose files are gone. On hosts without a persistent disk
   (Render free plan) the media folder resets on every restart; Wagtail then redraws each
   rendition on first request instead of linking to a missing file.
@@ -24,6 +26,12 @@ class Command(BaseCommand):
             call_command("seed_demo")
         else:
             self.stdout.write("Catalogue present: skipping the demo seed.")
+
+        from apps.inventory.tasks import release_expired_reservations
+
+        released = release_expired_reservations()
+        if released:
+            self.stdout.write(f"Released stock from {released} unpaid order(s) whose hold had lapsed.")
 
         from wagtail.images import get_image_model
 

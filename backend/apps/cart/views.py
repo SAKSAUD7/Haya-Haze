@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.core.exceptions import CommerceError
+from apps.inventory.tasks import release_lapsed_holds_inline
 from apps.promotions.models import Coupon, GiftCard
 
 from . import services
@@ -62,6 +63,7 @@ class CartItemsView(CartMixin, APIView):
         ser = AddItemSerializer(data=request.data)
         ser.is_valid(raise_exception=True)
         cart = services.get_cart(request, create=True)
+        release_lapsed_holds_inline()
         notice = services.add_item(cart, **ser.validated_data)
         cart.save(update_fields=["updated_at"])
         return self.respond(request, cart, status=201, notice=notice)
